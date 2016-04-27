@@ -8,7 +8,6 @@ It can be used for analysing the production of a single author, a working team, 
 This document describes the main functionalities in the package, and how to do a bibliometric analysis with `bibliometRics`, including producing automatic pdf reports via `knitr`.
 
 First of all, make sure you installed the package by sourcing it (note that this is a working project, so no 'oficial' package has been created yet).
-You can download the source code from this [link]('bibliometRics.R').
 
 
 ```r
@@ -87,12 +86,12 @@ The latter is a data.frame with the publications in rows, and the data referring
 
 # Analyzing bibliometric data
 
-The main function for analyizing these data is `bibliometric`.
+The main function for analyizing these data is `bibliometrics`.
 It takes an object with the bibliometric data resulting from a call to `read.isiwok` and returns a data.frame with a number of bibliometric indices.
 
 
 ```r
-bibliometric(bib)
+bibliometrics(bib)
 ```
 
 ```
@@ -170,7 +169,7 @@ egghe(bib, 2010)
 ```
 
 There is also a function for ranking the publications in quantiles according to the ISI-WoK Science Indicators tables.
-These need to be loaded as a table named [quantiles.csv]('./quantiles.csv'), located in the same directory as the data.
+These need to be loaded as a table named [quantiles.csv]('quantiles.csv'), located in the same directory as the data.
 
 
 ```r
@@ -210,7 +209,7 @@ biblioplot(bib)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="analysis_files/figure-html/unnamed-chunk-6-1.png" alt="A graphic bibliometric analysis"  />
+<img src="unnamed-chunk-6-1.png" alt="A graphic bibliometric analysis"  />
 <p class="caption">A graphic bibliometric analysis</p>
 </div>
 
