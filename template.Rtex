@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+
+\usepackage{listings}
+\lstset{breaklines=true}
+
+\usepackage{fancyhdr}
+
+%% for inline R code: if the inline code is not correctly parsed, you will see a message
+\newcommand{\rinline}[1]{SOMETHING WRONG WITH knitr}
+%% begin.rcode setup, include=FALSE
+% library(knitr)
+% opts_chunk$set(fig.path='figure/latex-', cache.path='cache/latex-')
+%% end.rcode
+
+\begin{document}
+
+%% begin.rcode bibdata, cache=FALSE, include=FALSE
+% source('functions.R')
+% bib <- read.isiwok('FILENAME')
+% x <- bibliometric(bib)
+% publist <- apply(cbind(bib$pubs,rank(bib$pubs)),1,format_pub,au=bib$au)
+%% end.rcode
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\rinline{bib$ref}}
+\lhead{\rinline{bib$au}}
+\rfoot{Page \thepage}
+\lfoot{\today}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\title{\rinline{bib$au} \\ \vspace{2 mm} {\large \rinline{bib$ref}}}
+\date{}
+\maketitle
+
+%\section*{\rinline{bib$au}}
+
+% Tratamos de cuantificar: la cantidad (pubs, pubs_year), la calidad / impacto (pubs_lead, hndx, hndx_year, cit_tot, cit_year, cit_art, ifact2, ifact5), y las aportaciones singulares (i10, i25, i50, cit_max).
+
+
+\section*{Indicators}
+
+%% begin.rcode cairo-scatter, echo=FALSE, dev='cairo_pdf', fig.width=12, fig.height=4, out.width='1.0\\textwidth'
+% biblioplot(bib)
+%% end.rcode
+
+
+%\section*{Table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\hline
+Publications (total) & Pubs. (as lead author) & Years & Pubs. per year \\
+\rinline{x$pubs} & \rinline{x$lead} & \rinline{x$years} & \rinline{x$pubs_year} \\
+\hline
+Citations (total) & Citations per year & Citations per pub & Citations (highest pub) \\
+\rinline{x$cit_tot} & \rinline{x$cit_year} & \rinline{x$cit_art} & \rinline{x$cit_max} \\
+\hline
+h-index & h-index per year & g-index & g-index per year \\
+\rinline{x$hin} & \rinline{x$hin_year} & \rinline{x$gin} & \rinline{x$gin_year} \\
+\hline
+Pubs $>$q0.9 & Pubs $>$q0.9 (as lead) & i-score & i-score (as lead) \\
+\rinline{x$pubs09} & \rinline{x$pubs09_lead} & \rinline{x$iscore} & \rinline{x$iscore_lead} \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section*{Publication list}
+
+\begin{enumerate}
+\rinline{publist}
+\end{enumerate}
+
+
+\end{document}
