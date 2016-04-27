@@ -228,7 +228,7 @@ apply(cbind(bib$pubs,rank(bib$pubs)),1,format_pub,au=bib$au)
 
 # Automated bibliometric reports
 
-The package also contains a template Rtex file, useful for creating automated reports.
+The package also contains a template `bibliometRics.Rtex` file, useful for creating automated reports.
 
 
 ```r
@@ -238,7 +238,7 @@ infile <- 'sbegueria.txt'
 outfile <- 'sbegueria.Rtex'
 
 # Create custom .Rtex file from the template and knit it
-x <- readLines('template.Rtex')
+x <- readLines('bibliometRics.Rtex')
 x <- gsub('FILENAME',infile,x)
 write(x,outfile)
 knit(outfile)
