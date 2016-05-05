@@ -81,7 +81,6 @@ egghe <- function(x,y=NULL) {
 #egghe(bib)
 
 # citation ranking (quantiles)
-quant <- read.table('quantiles.csv',sep=';',head=TRUE)
 rank <- function(x, w=NULL, q=quant) {
     x <- x$pubs
     if (!is.null(w)) {
@@ -119,7 +118,7 @@ ifactor <- function(x, y=NULL, n=2) {
 #ifactor(dat,2013) # 2-year impact factor, year 2013
 #ifactor(dat,n=5)  # 5-year impact factor
 
-bibliometric <- function(bib) {
+bibliometric <- function(bib, quant) {
 
 	au <- bib$author
 	dat <- bib$pubs
@@ -159,12 +158,12 @@ bibliometric <- function(bib) {
 	gin <- egghe(bib)
 
 	# pubs >0.9, >0.99
-	r <- rank(bib)
+	r <- rank(bib, q=quant)
 	p09 <- sum(as.numeric(r)<=4,na.rm=TRUE)
 	p099 <- sum(as.numeric(r)<=3,na.rm=TRUE)
 
 	# pubs >0.9, as lead author
-	r_lead <- rank(bib, pubs_lead)
+	r_lead <- rank(bib, pubs_lead, quant)
 	p09_lead <- sum(as.numeric(r_lead)<=4,na.rm=TRUE)
 
 	# i-score
@@ -348,10 +347,10 @@ format_pub <- function(x,au) {
 	auths <- paste0(auths,sep=';',collapse='')
 	auths <- substr(auths,1,nchar(auths)-1)
 	# format citations rank
-	if (is.na(x['rank(bib)']) | x['rank(bib)']=='') {
+	if (is.na(x['rank(bib, q = quant)']) | x['rank(bib, q = quant)']=='') {
 		rank <- ''
 	} else {
-		rank <- paste('; $',x['rank(bib)'],'$',sep='')
+		rank <- paste('; $',x['rank(bib, q = quant)'],'$',sep='')
 	}
 	# format title
 	title <- gsub('&','\\\\&',x['Title'])
@@ -384,3 +383,4 @@ format_pub <- function(x,au) {
 		x['Publication Year'],'. ',
 		'(cit: ',x['Total Citations'],rank,')\n', sep='')
 }
+
