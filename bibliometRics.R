@@ -3,7 +3,7 @@
 read.isiwok <- function(infile) {
 
 	# author
-	au <- read.table(infile,sep=',',nrows=1,stringsAsFactors=FALSE)
+	au <- read.table(infile, sep=',', nrows=1, stringsAsFactors=FALSE)
 	au <- paste(gsub('AUTHOR: \\(','',au[1]),gsub('\\)','',au[2]),sep=', ')
 	au <- toupper(au)
 
@@ -11,8 +11,9 @@ read.isiwok <- function(infile) {
 	re <- gsub('.txt','',rev(strsplit(infile,'/')[[1]])[1])
 
 	# read publications
-	dat <- read.table(infile,sep=',',stringsAsFactors=FALSE,skip=4)
-	colnames(dat) <- read.table(infile,sep=',',stringsAsFactors=FALSE,skip=3,nrows=1)
+	nskip <- ifelse (read.table(infile,sep=',',nrows=1,skip=1)=='null', 5, 4)
+	dat <- read.table(infile, sep=',', stringsAsFactors=FALSE, skip=nskip)
+	colnames(dat) <- read.table(infile,sep=',',stringsAsFactors=FALSE,skip=nskip-1,nrows=1)
 	o <- rev(order(dat[,'Publication Year']))
 	dat <- dat[o,]
 	start <- min(dat[,'Publication Year'])
@@ -30,7 +31,7 @@ read.isiwok <- function(infile) {
 	# au <- read.table(file,sep=',',nrows=1,stringsAsFactors=FALSE)[,2]
 	# au <- substr(au,9,nchar(au))
 
-	# # read publications
+	# # read publications
 	# dat <- read.table(file,sep=',',stringsAsFactors=FALSE,skip=7)[,c(1:7,9,12)]
 	# colnames(dat) <- c('year','title','authors','issn','journal','volume','issue','cit','cittotal')
 
@@ -95,7 +96,7 @@ rank <- function(x, w=NULL, q=quant) {
 		ww <- (r[i,2]-q[w,-1])>0
 		if (sum(ww)==0) {
 			r[i,3] <- '>q0'
-		} else {
+		} else {
 			r[i,3] <- paste('>',colnames(q[,-1])[ww][1],sep='')
 		}
 	}
@@ -105,7 +106,7 @@ rank <- function(x, w=NULL, q=quant) {
 #rank(bib)
 
 # impact factor
-ifactor <- function(x,y=NULL,n=2) {
+ifactor <- function(x, y=NULL, n=2) {
 	year <- x[,'Publication Year']
 	if (is.null(y)) {
 		y <- max(year)-1
@@ -133,8 +134,8 @@ bibliometric <- function(bib) {
 #	pubs_lead <- length(grep(auu,leads,ignore.case=TRUE))
 
 	# impact factor
-	ifact2 <- round(ifactor(dat,n=2),2)
-	ifact5 <- round(ifactor(dat,n=5),2)
+	ifact2 <- round(ifactor(dat, n=2), 2)
+	ifact5 <- round(ifactor(dat, n=5), 2)
 
 	# citations
 	cit_tot <- sum(dat[,'Total Citations'])
@@ -236,22 +237,6 @@ biblioplot <- function(bib) {
 	axis(4,at=pretty(ylims),labels=pretty(ylims)*10)
 	mtext('Pubs',2,line=2.5,cex=0.75)
 	mtext('Citations',4,line=2.5,cex=0.75)
-	#
-	# par(mar=c(5, 4, 4, 4)+0.1)
-	# ylabs <- pretty(c(0,max(max(pubs),ceiling(max(colSums(cits))/10))))
-	# ylims <- c(min(ylabs),max(ylabs))
-	# pubbar <- barplot(pubs,ylim=ylims,ylab='',yaxt='n')
-	# abline(h=ylabs,col='lightgray',lty='dotted')
-	# par(new=TRUE)
-	# pubbar <- barplot(pubs,ylim=ylims,ylab='',yaxt='n')
-	# lines(x=pubbar,y=cits['cits_lead',]/10)
-	# points(x=pubbar,y=cits['cits_lead',]/10,pch=19)
-	# lines(x=pubbar,y=cits['cits_total',]/10)
-	# points(x=pubbar,y=cits['cits_total',]/10,pch=21)
-	# axis(2)
-	# axis(4,at=pretty(ylims),labels=pretty(ylims)*10)
-	# mtext('Pubs per year',2,line=2.5)
-	# mtext('Citations per year',4,line=2.5)
 
 	# h- and g-index
 	years <- c(min(dat[,'Publication Year']):max(dat[,'Publication Year']))
@@ -316,7 +301,7 @@ biblioplot2 <- function(bib) {
 	cits <- cits[,w]
 	# cumulative citations
 	cits_cum <- cumsum(cits)
-	# plot
+	# plot
 	par(mar=c(5, 4, 4, 4)+0.1)
 	ylabs <- pretty(c(0,max(max(pubs_cum),ceiling(max(cits_cum)/10))))
 	ylims <- c(min(ylabs),max(ylabs))
@@ -399,7 +384,3 @@ format_pub <- function(x,au) {
 		x['Publication Year'],'. ',
 		'(cit: ',x['Total Citations'],rank,')\n', sep='')
 }
-# x <- cbind(bib$pubs,rank(bib))[37,]
-# for (i in 1:nrow(bib$pubs)) {format_pub(as.vector(cbind(bib$pubs,rank(bib)))[i,],bib$au)}
-# apply(cbind(bib$pubs,rank(bib)),1,format_pub,au=bib$au)
-
