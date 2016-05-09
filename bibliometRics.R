@@ -122,7 +122,7 @@ bibliometric <- function(bib, quant) {
 
 	au <- bib$author
 	dat <- bib$pubs
-	
+
 	# publications
 	pubs <- nrow(dat)
 
