@@ -48,7 +48,7 @@
 
 \section*{Indicators}
 
-%% begin.rcode cairo-scatter, echo=FALSE, message=FALSE, warning=FALSE, dev='cairo_pdf', fig.width=12, fig.height=4, out.width='1.0\\textwidth'
+%% begin.rcode biblioplot, cairo-scatter, echo=FALSE, message=FALSE, warning=FALSE, dev='cairo_pdf', fig.width=12, fig.height=4, out.width='1.0\\textwidth'
 % biblioplot(bib)
 %% end.rcode
 
