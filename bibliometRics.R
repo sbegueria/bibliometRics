@@ -4,7 +4,8 @@ read.isiwok <- function(infile) {
 
 	# author
 	au <- read.table(infile, sep=',', nrows=1, stringsAsFactors=FALSE)
-	au <- paste(gsub('AUTHOR: \\(','',au[1]),gsub('\\)','',au[2]),sep=', ')
+	#au <- paste(gsub('AUTHOR: \\(','',au[1]),gsub('\\)','',au[2]),sep=', ')
+	au <- paste(gsub('(AUTHOR)( IDENTIFIERS)*(: \\()','',au[1]), gsub('\\)','',au[2]),sep=', ')
 	au <- toupper(au)
 
 	# reference
