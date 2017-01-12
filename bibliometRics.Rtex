@@ -21,10 +21,10 @@
 
 %% begin.rcode bibdata, cache=FALSE, include=FALSE
 % source('bibliometRics.R')
-% quant <- read.table('quantiles_geosci_2015.csv',sep=';',head=TRUE)
-% bib <- read.isiwok('FILENAME')
-% x <- bibliometric(bib, quant)
-% publist <- apply(cbind(bib$pubs,rank(bib,q=quant)),1,format_pub,au=bib$au)
+% quant <- read.baselines('BaselinePercentiles.csv')
+% bib <- read.wos('FILENAME')
+% x <- bibliometric(bib, quant, 'GEOSCIENCES')
+% publist <- apply(cbind(bib$pubs,rank(bib,q=quant$GEOSCIENCES)),1,format_pub,au=bib$au)
 %% end.rcode
 
 \pagestyle{fancy}
@@ -49,7 +49,7 @@
 \section*{Indicators}
 
 %% begin.rcode biblioplot, cairo-scatter, echo=FALSE, message=FALSE, warning=FALSE, dev='cairo_pdf', fig.width=12, fig.height=4, out.width='1.0\\textwidth'
-% biblioplot(bib)
+% biblioplot(bib, q=base$GEOSCIENCES)
 %% end.rcode
 
 

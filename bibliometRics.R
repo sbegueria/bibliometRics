@@ -1,6 +1,6 @@
-# Functions to read and process ISI WOK data
+# Functions to read and process Web of Science citation report data.
 
-read.isiwok <- function(infile) {
+read.wos <- function(infile) {
 
 	# author
 	au <- read.table(infile, sep=',', nrows=1, stringsAsFactors=FALSE)
@@ -26,19 +26,33 @@ read.isiwok <- function(infile) {
 #bib <- read.isiwok('isiwok_MAM.txt')
 
 
-# read.scopus <- function(file) {
+# read.scopus <- function(infile) {
 
 	# # author
-	# au <- read.table(file,sep=',',nrows=1,stringsAsFactors=FALSE)[,2]
+	# au <- read.table(infile,sep=',',nrows=1,stringsAsFactors=FALSE)[,2]
 	# au <- substr(au,9,nchar(au))
 
 	# # read publications
-	# dat <- read.table(file,sep=',',stringsAsFactors=FALSE,skip=7)[,c(1:7,9,12)]
+	# dat <- read.table(infile,sep=',',stringsAsFactors=FALSE,skip=7)[,c(1:7,9,12)]
 	# colnames(dat) <- c('year','title','authors','issn','journal','volume','issue','cit','cittotal')
 
 	# return()
 # }
 # bib <- read.scopus('scopus_SBP_win.csv')
+
+# Read field percentile baselines (FPB) from the Essential Science Indicators database.
+read.baselines <- function(infile) {
+  fpb <- read.table(infile, sep=',', skip=1, stringsAsFactors=FALSE, head=TRUE)
+  fields <- fpb$RESEARCH.FIELDS[-grep('%|©', fpb$RESEARCH.FIELDS)]
+  baselines <- list(NULL)
+  for (i in 1:length(fields)) {
+    w <- which(fpb$RESEARCH.FIELDS==fields[i])
+    baselines[[i]] <- fpb[w+1:6,]
+    colnames(baselines[[i]])[1] <- 'percentiles'
+    names(baselines)[i] <- fields[i]
+  }
+  return(baselines)
+}
 
 # Hirsch's h-index
 hirsch <- function(x,y=NULL) {
@@ -82,28 +96,27 @@ egghe <- function(x,y=NULL) {
 #egghe(bib)
 
 # citation ranking (quantiles)
-rank <- function(x, w=NULL, q=quant) {
-    x <- x$pubs
-    if (!is.null(w)) {
-        x <- x[w,]
-    }
-    r <- data.frame(a=x[,'Publication Year'],b=x[,'Total Citations'],c='')
-	r$c <- factor(r$c,levels=c('>q0.9999','>q0.999','>q0.99','>q0.9','>q0.8',
-		'>q0.5','>q0'))
+rank <- function(x, w=NULL, q=NULL) {
+  x <- x$pubs
+  if (!is.null(w)) {
+    x <- x[w,]
+  }
+  r <- data.frame(a=x[,'Publication Year'],b=x[,'Total Citations'],c='')
+	r$c <- factor(r$c,levels=c('>q0.9999','>q0.999','>q0.99','>q0.9','>q0.8','>q0.5','>q0'))
 	for (i in 1:nrow(r)) {
-		w <- which(r[i,1]==q$year)
+		w <- grep(r[i,1],names(q))
 		if (length(w)==0) next()
-		ww <- (r[i,2]-q[w,-1])>0
-		if (sum(ww)==0) {
-			r[i,3] <- '>q0'
+		ww <- which(r[i,2]-q[,w]>=0)[1]
+		if (is.na(ww)) {
+		  r[i,3] <- levels(r$c)[7]
 		} else {
-			r[i,3] <- paste('>',colnames(q[,-1])[ww][1],sep='')
+		  r[i,3] <- levels(r$c)[ww]
 		}
 	}
 	return(r[,3])
 }
-#rank(bib, c(9,10))
-#rank(bib)
+#rank(bib, c(9,10), quant)
+#rank(bib, quant)
 
 # impact factor
 ifactor <- function(x, y=NULL, n=2) {
@@ -119,8 +132,15 @@ ifactor <- function(x, y=NULL, n=2) {
 #ifactor(dat,2013) # 2-year impact factor, year 2013
 #ifactor(dat,n=5)  # 5-year impact factor
 
-bibliometric <- function(bib, quant) {
+bibliometric <- function(bib, base, discipline=NULL) {
 
+  if (!is.null(discipline)) {
+    w <- grep(discipline, names(base))
+  } else {
+    w <- 1
+  }
+  quant <- base[[w]]
+    
 	au <- bib$author
 	dat <- bib$pubs
 
@@ -185,9 +205,9 @@ bibliometric <- function(bib, quant) {
 		'i50','cit_max','pubs09','pubs09_lead','pubs099','iscore','iscore_lead')
 	return(out)
 }
-#bibliometric(bib)
+#bibliometric(bib, baseline)
 
-biblioplot <- function(bib) {
+biblioplot <- function(bib, quant) {
 
 	par(mfrow=c(1,3))
 
@@ -263,7 +283,7 @@ biblioplot <- function(bib) {
 	mtext('g-index',4,line=2.5,cex=0.75)
 
 	# Excelence
-	exc <- rbind(rev(table(rank(bib, w_lead))),rev(table(rank(bib, -w_lead))))[,-7]
+	exc <- rbind(rev(table(rank(bib, w_lead, q=quant))),rev(table(rank(bib, -w_lead, q=quant))))[,-7]
 	rownames(exc) <- c('pubs_lead','pubs_nolead')
 	# plot
 	barplot(exc)
@@ -342,19 +362,23 @@ format_pub <- function(x,au) {
 	if (substr(x['Authors'],nchar(x['Authors']),nchar(x['Authors']))!='.') {
 		x['Authors'] <- paste(x['Authors'],'.',sep='')
 	}
-	auths <- strsplit(x['Authors'],';')[[1]]
+	auths <- strsplit(as.character(x['Authors']),';')[[1]]
 	w <- grep(strsplit(gsub('Ñ','N',au),',')[[1]][1],auths,ignore.case=TRUE)
-	auths[w] <- paste('\\textbf{',auths[w],'}',sep='')
+	auths[w]<- paste('\\textbf{',auths[w],'}',sep='')
 	auths <- paste0(auths,sep=';',collapse='')
 	auths <- substr(auths,1,nchar(auths)-1)
 	# format citations rank
-	if (is.na(x['rank(bib, q = quant)']) | x['rank(bib, q = quant)']=='') {
-		rank <- ''
+	w <- grep('rank',names(x))
+#	if (is.na(x[,w]) | x[,w]=='') {
+  if (is.na(x[w])) {
+	    rank <- ''
 	} else {
-		rank <- paste('; $',x['rank(bib, q = quant)'],'$',sep='')
+#		rank <- paste('; $',x[,w],'$',sep='')
+		rank <- paste('; $',x[w],'$',sep='')
 	}
 	# format title
-	title <- gsub('&','\\\\&',x['Title'])
+	require(tools)
+	title <- gsub('&','\\\\&',toTitleCase(tolower(as.character(x['Title']))))
 	# format source
 	source <- gsub('&','\\\\&',x['Source Title'])
 	# format volume and pages
