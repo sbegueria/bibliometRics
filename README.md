@@ -231,7 +231,7 @@ biblioplot(bib, q=base$GEOSCIENCES)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="biblioplot_example.pdf" alt="A graphic bibliometric analysis" />
+<img src="./biblioplot_example.pdf" alt="A graphic bibliometric analysis" />
 <p class="caption">A graphic bibliometric analysis</p>
 </div>
 
