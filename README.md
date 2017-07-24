@@ -1,6 +1,6 @@
-# bibliometRics
+# bibliometRics [![DOI](https://zenodo.org/badge/57246514.svg)](https://zenodo.org/badge/latestdoi/57246514)
 Santiago Beguería  
-26 April 2016  
+26 April 2016
     
 `bibliometRics` is an R package for bibliometric analysis of scientific production.
 It can be used for analysing the production of a single author, a working team, department, institute, etcetera.
@@ -15,7 +15,7 @@ source('bibliometRics.R')
 ```
 
 
-# Getting some bibliometric data
+## Getting some bibliometric data
 
 So far the unique source of blibiometric information accepted by `bibliometRics` is the Web of Science (WoS) by Thomson Reuters, but other sources such as Scopus or Google Scholar can be added in the future.
 Publications can be selected for a given author (easiest if you know its author ID) or a group (such a research group or a department, for instance).
@@ -87,7 +87,7 @@ The result is a list with the following three elements:
 * `pubs`, a data frame with the publications in rows, and the data referring to each publications in columns, including the number of citations received, year by year.
 
 
-# Analyzing bibliometric data
+## Analyzing bibliometric data
 
 The main function for analyizing these data is `bibliometric`.
 It takes an object with the bibliometric data resulting from a call to `read.wos` and returns a data.frame with a number of bibliometric indices.
@@ -252,7 +252,7 @@ format_pub(cbind(bib$pubs, rank(bib,q=base$GEOSCIENCES))[1,], au=bib$au)
 ```
 
 
-# Automated bibliometric reports
+## Automated bibliometric reports
 
 The package also contains a template `bibliometRics.Rtex` file, useful for creating automated reports.
 You'll need to load the package `knitr` in order to produce the report.
