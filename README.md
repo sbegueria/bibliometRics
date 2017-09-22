@@ -7,7 +7,7 @@ It can be used for analysing the production of a single author, a working team, 
 
 This document describes the main functionalities in the package, and how to do a bibliometric analysis with `bibliometRics`, including producing automatic pdf reports via `knitr`.
 
-You can cite this package on your work as: Beguería S. (2015) bibliometRics: an R package for for bibliometric analysis of scientific production, doi:10.5281/zenodo.57246514.
+You can cite this package on your work as: Beguería S. (2015) bibliometRics: an R package for for bibliometric analysis of scientific production, doi:10.5281/zenodo.834260.
 
 ## Installation
 
