@@ -1,0 +1,31 @@
+Type: Package
+Package: bibliometRics
+Title: Bibliometric Analysis of Scientific Production
+Version: 0.1.0
+Authors@R: 
+    c(
+        person(given ="Santiago", family = "Beguería", 
+        role = c("aut", "cre"),
+        email = "santiago.begueria@csic.es",
+        comment = c(ORCID = "0000-0002-3974-2947")),
+        person(given = "John",
+           family = "Muschelli",
+           role = c("aut"),
+           email = "muschellij2@gmail.com",
+           comment = c(ORCID = "0000-0001-6469-1750"))
+    )
+Description: Analyzes the production of a single author, a
+    working team, or department from the perspective of citations.
+License: GPL-3
+Imports:
+    utils,
+    graphics
+Suggests: 
+    covr,
+    knitr,
+    rmarkdown,
+    testthat
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.1.0
