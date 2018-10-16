@@ -19,7 +19,9 @@ read.baselines <-
       stringsAsFactors = FALSE,
       header = TRUE
     )
-    fields <- fpb$RESEARCH.FIELDS[-grep('%|©', fpb$RESEARCH.FIELDS)]
+
+    # \u00A9 is ©
+    fields <- fpb$RESEARCH.FIELDS[-grep('%|\u00A9', fpb$RESEARCH.FIELDS)]
     baselines <- list(NULL)
     for (i in 1:length(fields)) {
       w <- which(fpb$RESEARCH.FIELDS == fields[i])
