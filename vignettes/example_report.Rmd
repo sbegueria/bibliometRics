@@ -1,0 +1,75 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+
+```{r bibdata, include=FALSE}
+library(bibliometRics)
+wos_file = system.file("sbegueria.txt", package = "bibliometRics")
+bib <- read.wos(wos_file)
+quant <- read.baselines()
+x <- bibliometric(bib, quant, 'GEOSCIENCES')
+publist <- apply(
+  cbind(bib$pubs,
+        citation_rank(bib, quant = quant$GEOSCIENCES)), 
+  1, format_pub, au =
+    bib$au)
+bib$ref
+bib$au
+```
+
+
+
+## Indicators
+
+```{r biblioplot, cairo-scatter, echo=FALSE, message=FALSE, warning=FALSE,  fig.width=12, fig.height=4}
+biblioplot(bib, quant =  quant$GEOSCIENCES)
+```
+
+
+## Table
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\hline
+Publications (total) & Pubs. (as lead author) & Years & Pubs. per year \\
+`r x$pubs` & `r x$lead` & `r x$years` & `r x$pubs_year` \\
+\hline
+Citations (total) & Citations per year & Citations per pub & Citations (highest pub) \\
+`r x$cit_tot` & `r x$cit_year` & `r x$cit_art` & `r x$cit_max` \\
+\hline
+h-index & h-index per year & g-index & g-index per year \\
+`r x$hin` & `r x$hin_year` & `r x$gin` & `r x$gin_year` \\
+\hline
+Pubs $>$q0.9 & Pubs $>$q0.9 (as lead) & i-score & i-score (as lead) \\
+`r x$pubs09` & `r x$pubs09_lead` & `r x$iscore` & `r x$iscore_lead` \\
+\hline
+\end{tabular}
+\end{table}
+
+
+# Publication list
+
+\begin{enumerate}
+`r publist`
+\end{enumerate}
+
+
+\end{document}
